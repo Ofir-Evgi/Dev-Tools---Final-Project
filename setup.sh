@@ -4,10 +4,14 @@ MYSQL_IMAGE="mysql:latest"
 MYSQL_CONTAINER_NAME="mysql-db"
 MYSQL_ROOT_PASSWORD="my-secret-pw"
 MYSQL_DATABASE="our-app-db"
+MYSQL_PORT="3306"
+MYSQL_HOST_PORT="3306"
 
 JOOMLA_IMAGE="joomla:latest"
 JOOMLA_CONTAINER_NAME="joomla-app"
 JOOMLA_USER="root"
+JOOMLA_PORT="8080"
+JOOMLA_HOST_PORT="80"
 
 echo "Creating docker network"
 docker network create "$NETWORK_NAME"
@@ -20,7 +24,7 @@ docker run -d \
   --network "$NETWORK_NAME" \
   -e MYSQL_ROOT_PASSWORD="$MYSQL_ROOT_PASSWORD" \
   -e MYSQL_DATABASE="$MYSQL_DATABASE" \
-  -p "$MYSQL_PORT:3306" \
+  -p "$MYSQL_PORT:$MYSQL_HOST_PORT" \
   "$MYSQL_IMAGE"
 
 docker run -d \
@@ -30,5 +34,5 @@ docker run -d \
   -e JOOMLA_DB_USER="$JOOMLA_USER" \
   -e JOOMLA_DB_PASSWORD="$MYSQL_ROOT_PASSWORD" \
   -e JOOMLA_DB_NAME="$MYSQL_DATABASE" \
-  -p "8080:80" \
+  -p "$JOOMLA_PORT:$JOOMLA_HOST_PORT" \
   "$JOOMLA_IMAGE"
